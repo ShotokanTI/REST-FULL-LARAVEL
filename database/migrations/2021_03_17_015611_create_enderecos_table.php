@@ -17,9 +17,9 @@ class CreateEnderecosTable extends Migration
             $table->id();
             $table->char('Estado', 2);
             $table->string('Cidade', 60);
-            $table->string('Endereco', 60);
-            $table->string('Identificador',11)->unique();
-            $table->foreign('Identificador')->references('Cpf')->on('Usuarios');
+            $table->string('Rua', 60);
+            $table->string('Usuario_Cpf',11);
+            $table->foreign('Usuario_Cpf')->references('Cpf')->on('Usuarios')->onDelete('CASCADE');
         });
     }
 

@@ -5,7 +5,6 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
 class Usuario extends Model
 {
     use HasFactory;
@@ -14,9 +13,12 @@ class Usuario extends Model
     protected $fillable = [
         'Nome', 'Sobrenome', 'Data_Nascimento', 'Cpf'
     ];
-
-    public function setData_NascimentoDateAttribute($value)
-    {
-       return $this->attributes['Data_Nascimento'] = Carbon::createFromDate('Y/m/d', $value)->format('d/m/Y');
+    
+    /**
+     * Cria a relação entre usuario e endereco.
+     */
+    public function endereco(){
+        return $this->hasOne(Endereco::class,'Usuario_Cpf','Cpf');
     }
+
 }

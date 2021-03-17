@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Endereco;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
-
+use App\Helpers\MessagesHelper;
+use App\Helpers\FunctionHelper;
 class API extends Controller
 {
 
@@ -18,7 +20,11 @@ class API extends Controller
      */
     public function index()
     {
-        return json_encode(Usuario::all());
+        $allUsers = Usuario::all();
+        if ($allUsers->isEmpty()) {
+            return MessagesHelper::Response_No_Data();
+        }
+        return MessagesHelper::Response_Successfull($allUsers);
     }
 
     /**
@@ -37,14 +43,21 @@ class API extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store()
+    public function store(Request $request)
     {
-        return Usuario::create([
-            'Nome' => request('Nome'),
-            'Sobrenome' => request('Sobrenome'),
-            'Data_Nascimento' => request('Data_Nascimento'),
-            'Cpf' => request('Cpf'),
-        ]);
+
+        $user = new Usuario();
+        $user->fill($request->all());
+
+        $endereco = new Endereco();
+        $endereco->fill($request->all());
+
+        if (FunctionHelper::Row_Empty_Table($user,'Cpf',$request->Cpf)) {
+            $user->save();
+        }
+        $user->endereco()->save($endereco);
+
+        return response()->json($user, 201);
     }
 
     /**
@@ -55,7 +68,16 @@ class API extends Controller
      */
     public function show($id)
     {
-        //
+        $user = Usuario::find($id);
+        if ($this->result_not_exist($user)) {
+            return response()->json('Não encontramos este dado na base de dados', 200, [], JSON_UNESCAPED_UNICODE);
+        }
+        return response()->json($user, 200, [], JSON_UNESCAPED_UNICODE);
+    }
+
+    public function result_not_exist($row)
+    {
+        return empty($row) || is_null($row);
     }
 
     /**
@@ -94,14 +116,20 @@ class API extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id = null)
     {
-        $user = Usuario::find($id);
-        if (!empty($user)) {
-            $user->delete();
-            return json_encode("Mensagem:Usuario deletado com sucesso",JSON_UNESCAPED_UNICODE);
-        } else {
-            return json_encode("Error:Não achamos este usuario na base de dados!",JSON_UNESCAPED_UNICODE);
+        try {
+            $user = Usuario::find($id);
+            if (!empty($user)) {
+                $user->delete();
+                echo json_encode("Mensagem:Usuario deletado com sucesso", JSON_UNESCAPED_UNICODE);
+            } else {
+                echo json_encode("Error:Não achamos este usuario na base de dados!", JSON_UNESCAPED_UNICODE);
+            }
+        } catch (\Exception $e) {
+            if (is_null($id)) {
+                return json_encode("Error:Não achamos este usuario na base de dados!", JSON_UNESCAPED_UNICODE);
+            }
         }
     }
 }
