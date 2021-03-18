@@ -1,7 +1,8 @@
 
 ## Startando o projeto
 
-Utilize do comando - php composer.phar install para baixar as dependencias do projeto.
+1) Use o comando <strong>composer install</strong> para baixar as dependencias do projeto.
+2) Use o comando <strong>php artisan migrate:fresh</strong> para criar a base de dados.
 
 ## Fazendo as requisições
 
@@ -22,6 +23,10 @@ Utilize do comando - php composer.phar install para baixar as dependencias do pr
 
   Observação:Se você excluir um usuario,todos os endereços atrelhados a ele também serão excluidos.
 ## API ENDERECO
+
+  DELETE - Excluir um endereco especifico http://SEUDOMINIO/api/enderecos/{idDesejado}
+
+  PUT - Modificar Endereco do usuario ao banco de dados http://SEUDOMINIO/api/enderecos/{idDesejado}
 
   GET - Retorna todas as cidades cadastradas http://SEUDOMINIO/api/cidades/
 
