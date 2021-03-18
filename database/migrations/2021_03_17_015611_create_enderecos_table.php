@@ -19,7 +19,7 @@ class CreateEnderecosTable extends Migration
             $table->string('Cidade', 60);
             $table->string('Rua', 60);
             $table->string('Usuario_Cpf',11);
-            $table->foreign('Usuario_Cpf')->references('Cpf')->on('Usuarios')->onDelete('CASCADE');
+            $table->foreign('Usuario_Cpf')->references('Cpf')->on('Usuarios')->onDelete('CASCADE')->onUpdate('CASCADE');
         });
     }
 

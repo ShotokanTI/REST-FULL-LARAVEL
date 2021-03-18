@@ -10,6 +10,7 @@ use App\Helpers\FunctionHelper;
 class API extends Controller
 {
 
+    
     public function __construct()
     {
     }
@@ -57,7 +58,7 @@ class API extends Controller
         }
         $user->endereco()->save($endereco);
 
-        return response()->json($user, 201);
+        return  MessagesHelper::Response_Successfull(array_merge(json_decode($user,true),json_decode($endereco,true)));
     }
 
     /**
@@ -68,11 +69,12 @@ class API extends Controller
      */
     public function show($id)
     {
-        $user = Usuario::find($id);
-        if ($this->result_not_exist($user)) {
-            return response()->json('Não encontramos este dado na base de dados', 200, [], JSON_UNESCAPED_UNICODE);
+        $user = new Usuario();
+        $colunm = 'id';
+        if (FunctionHelper::Row_Empty_Table($user,$colunm,$id)) {
+            return MessagesHelper::Response_No_Data($colunm,$id);
         }
-        return response()->json($user, 200, [], JSON_UNESCAPED_UNICODE);
+        return MessagesHelper::Response_Successfull($user->find($id));
     }
 
     public function result_not_exist($row)
